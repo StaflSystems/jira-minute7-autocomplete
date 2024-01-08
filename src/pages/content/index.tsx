@@ -1,32 +1,33 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
+import Tribute from "tributejs";
+import { JiraIssueRetriever, JiraIssue } from "@src/utils/jira";
+import browser from 'webextension-polyfill';
 
-function Content(): JSX.Element {
-  return (
-    <div className="absolute top-0 left-0 right-0 bottom-0 text-center h-full p-3 bg-gray-800">
-      <header className="flex flex-col items-center justify-center text-white">
-        <p>
-          Edit <code>src/pages/content/index.jsx</code> and save to reload.
-        </p>
-        <a
-          className="text-blue-400"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React!
-        </a>
-        <p>Content styled</p>
-      </header>
-    </div>
-  );
-}
+import "./style.css";
 
-function init() {
-  const rootContainer = document.body;
-  if (!rootContainer) throw new Error("Can't find Content root element");
-  const root = createRoot(rootContainer);
-  root.render(<Content />);
+async function init() {
+  console.log(document.URL)
+
+  if (!document.URL.startsWith("https://frontend.minute7.com")) {
+    return;
+  }
+
+  const issues: JiraIssue[] = await browser.runtime.sendMessage({ type: "jiraSuggestions" });
+  
+  console.log(issues);
+  var tribute = new Tribute({
+    values: issues.map((issue: JiraIssue) => {
+      return {
+        key: issue.key + ": " + issue.summary,
+        value: issue.key + ": " + issue.summary,
+      };
+    })
+  });
+
+  const te = document.getElementsByTagName("textarea")[0];
+  console.log(te);
+  tribute.attach(te);
 }
 
 document.addEventListener("DOMContentLoaded", init);

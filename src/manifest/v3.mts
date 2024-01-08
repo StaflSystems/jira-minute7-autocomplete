@@ -18,6 +18,10 @@ const manifest: ManifestTypeV3 = {
       matches: ["<all_urls>"],
     },
   ],
+  permissions:[ "storage" ],
+  host_permissions: [
+    "https://*.atlassian.net/*",
+  ]
 };
 
 function getManifestV3(pageDirMap: { [x: string]: any }): ManifestTypeV3 {

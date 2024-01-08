@@ -1,22 +1,26 @@
 {
-  "name": "browser-extension",
-  "displayName": "Browser Extension",
+  "name": "jira-minute7-autocomplete",
+  "displayName": "Jira Minute7 Autocomplete",
   "version": "2.0.0",
-  "description": "Browser Extension Boilerplate",
+  "description": "Autocompletes Jira items in Minute7",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/debdut/browser-extension.git"
+    "url": "git@github.com:StaflSystems/jira-minute7-autocomplete.git"
   },
   "scripts": {
-    "start": "ts-node-esm scripts/build.ts --dev",
-    "build": "ts-node-esm scripts/build.ts"
+    "start": "node --loader ts-node/esm scripts/build.ts --dev",
+    "build": "node --loader ts-node/esm scripts/build.ts"
   },
   "type": "module",
   "dependencies": {
     "@types/webextension-polyfill": "^0.10.0",
+    "jira.js": "^3.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.49.2",
+    "tributejs": "^5.1.3",
+    "ts-data-class": "^0.10.0",
     "webextension-polyfill": "^0.10.0"
   },
   "devDependencies": {
