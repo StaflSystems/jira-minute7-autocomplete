@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { JiraCredentialStore, JiraCredentials } from "@src/utils/settings";
+import { JiraCredentialStore, JiraCredentials } from "@src/lib/settings";
 
 import logo from "@assets/img/logo.svg";
 

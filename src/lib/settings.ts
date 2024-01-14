@@ -1,7 +1,6 @@
 import browser from 'webextension-polyfill';
-import { DTClass, DTParsers } from 'ts-data-class';
 
-export class JiraCredentials /*extends DTClass<JiraCredentials> */ {
+export class JiraCredentials {
     constructor(init?: Partial<JiraCredentials>) {
         Object.assign(this, init);
     }
@@ -9,14 +8,6 @@ export class JiraCredentials /*extends DTClass<JiraCredentials> */ {
     instanceUrl!: string;
     username!: string;
     apiToken!: string;
-
-    // protected get parsers(): DTParsers<JiraCredentials> {
-    //     return {
-    //         instanceUrl: (v) => (typeof v === "string" ? v : ""),
-    //         username: (v) => (typeof v === "string" ? v : ""),
-    //         apiToken: (v) => (typeof v === "string" ? v : ""),
-    //     };
-    // }
 }
 
 export class JiraCredentialStore {

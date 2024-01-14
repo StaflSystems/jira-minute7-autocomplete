@@ -1,0 +1,12 @@
+.autocomplete-entry {
+    background-color: #FFFFFF;
+    padding: 5px;
+  }
+  
+  .autocomplete-entry.selected {
+    background-color: #009ceb;
+  }
+
+  .autocomplete-entry:hover {
+    background-color: #cbd1d3;
+  }

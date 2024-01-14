@@ -18,7 +18,7 @@ const manifest: ManifestTypeV3 = {
       matches: ["<all_urls>"],
     },
   ],
-  permissions:[ "storage" ],
+  permissions:[ "storage", "webRequest" ],
   host_permissions: [
     "https://*.atlassian.net/*",
   ]

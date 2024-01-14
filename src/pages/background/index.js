@@ -1,16 +1,18 @@
 import browser from 'webextension-polyfill';
-import { JiraIssue, JiraIssueRetriever } from '@src/utils/jira';
+import {JiraIssueRetriever} from '@src/lib/jira';
 
 console.log("background script loaded");
 
-const jiraIssueRetriever = new JiraIssueRetriever();
-
-browser.runtime.onMessage.addListener(async function (message) {
+browser.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     console.log("here");
     if (message.type === "jiraSuggestions") {
-        await jiraIssueRetriever.init();
-        const issues = await jiraIssueRetriever.getRecentlyUpdatedIssues();
-        return issues;
+        const jiraIssueRetriever = new JiraIssueRetriever();
+        jiraIssueRetriever.init().then(async () => {
+            const issues = await jiraIssueRetriever.getRecentlyUpdatedIssues();
+            sendResponse(issues);
+        });
+
+        return true;
     }
 });
 
