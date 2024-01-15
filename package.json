@@ -11,7 +11,7 @@
   "scripts": {
     "start": "node --loader ts-node/esm scripts/build.ts --dev",
     "build": "node --loader ts-node/esm scripts/build.ts",
-    "build-safari": "rm -rf dist/safari-xcode && xcrun safari-web-extension-converter --swift --force --project-location xcode --app-name \"Jira Minute7 Autocomplete\" --bundle-identifier \"com.staflsystems.jira-minute7-autocomplete\" --no-open dist/safari/"
+    "build-safari": "xcrun safari-web-extension-converter --copy-resources --swift --force --project-location xcode --app-name \"Jira Minute7 Autocomplete\" --bundle-identifier \"com.staflsystems.jira-minute7-autocomplete\" --no-open dist/safari/"
   },
   "type": "module",
   "dependencies": {
