@@ -56,22 +56,16 @@ jobs:
         run: npm run build ${{ matrix.browser }}
       
       - name: Zip
+        if: matrix.browser != 'safari'
         run: 7z a dist/${{ matrix.browser }}.zip ./dist/${{ matrix.browser }}/*
 
-      - name: Generate Safari Project
+      - name: Generate & Zip Safari Project
         if: matrix.browser == 'safari'
-        run: npm run build-safari && 7z a xcode.zip ./xcode/*
+        run: npm run build-safari && 7z a dist/safari.zip ./xcode/*
       
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: extension-${{ matrix.browser }}
           path: dist/${{ matrix.browser }}.zip
-      
-      - name: Upload Safari Project
-        if: matrix.browser == 'safari'
-        uses: actions/upload-artifact@v4
-        with:
-          name: extension-safari-project
-          path: xcode.zip
       
