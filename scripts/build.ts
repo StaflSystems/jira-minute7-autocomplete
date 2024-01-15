@@ -485,7 +485,7 @@ function MatchExtVersions(browsers: BrowserPath[]) {
   return Array.from(versions);
 }
 
-function BuildBrowserExt(browsers: string[]) {
+async function BuildBrowserExt(browsers: string[]) {
   const matchedBrowsers = MatchInstalledBrowsers(browsers);
 
   if (matchedBrowsers.length === 0) {
@@ -495,7 +495,7 @@ function BuildBrowserExt(browsers: string[]) {
 
   const versions = MatchExtVersions(matchedBrowsers);
 
-  BuildVersionedExt(versions);
+  await BuildVersionedExt(versions);
 
   for (const matchedBrowser of matchedBrowsers) {
     const version = manifestVersion(matchedBrowser);
@@ -578,7 +578,7 @@ function LaunchCommand(browser: BrowserPath, profileDir: string) {
   return;
 }
 
-function DevBrowserExt(browsers: string[]) {
+async function DevBrowserExt(browsers: string[]) {
   const matchedBrowsers = MatchInstalledBrowsers(browsers);
 
   let versions: (2 | 3)[] = [];
@@ -588,7 +588,7 @@ function DevBrowserExt(browsers: string[]) {
     versions = MatchExtVersions(matchedBrowsers);
   }
 
-  DevVersionedExt(versions);
+  await DevVersionedExt(versions);
 
   const profileRoot = CreateProfileRoot();
   const commands: string[] = [];
@@ -608,28 +608,33 @@ function DevBrowserExt(browsers: string[]) {
 
   const { result } = concurrently(commands);
 
-  result
-    .then(() => {
-      console.log("All processes exited");
-      process.exit(0);
-    })
-    .catch((err) => {
-      for (const { command, exitCode } of err) {
-        if (exitCode !== 0) {
-          console.error(`${command.command}:\n exited with code ${exitCode}\n`);
-          throw new Error(command.error);
-        }
-      }
-    });
+  try {
+    await result;
+  } catch (err) {
+    if (!Array.isArray(err)) {
+      console.error(err);
+      process.exit(1);
+    }
+
+    for (const { command, exitCode } of err) {
+      if (exitCode !== 0) {
+        console.error(`${command.command}:\n exited with code ${exitCode}\n`);
+        throw new Error(command.error);
+      };
+    }
+  }
+
+  console.log("All processes exited");
+  process.exit(0);
 }
 
-function Init() {
+async function Init() {
   const { browsers, dev } = GetArgs();
 
   if (dev) {
-    DevBrowserExt(browsers);
+    await DevBrowserExt(browsers);
   } else {
-    BuildBrowserExt(browsers);
+    await BuildBrowserExt(browsers);
   }
 }
 
