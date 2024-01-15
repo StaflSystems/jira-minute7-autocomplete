@@ -8,6 +8,7 @@ export class JiraIssue {
     key!: string;
     summary!: string;
     assignee!: string;
+    iconUrl!: string;
 }
 
 export class JiraIssueRetriever {
@@ -21,19 +22,12 @@ export class JiraIssueRetriever {
         }
     }
 
-    async searchIssues(jql: string, startAt: number) : Promise<{issues: JiraIssue[], total: number}> {
+    async get(endpoint: string, params: any): Promise<any> {
         if (!this.Credentials) {
             throw new Error('Not initialized');
         }
-        
-        const params = {
-            'jql': jql,
-            'fields': 'summary,description,assignee',
-            'startAt': startAt.toString(),
-            'maxResults': '100',
-        }
 
-        var url = new URL(this.Credentials.instanceUrl + '/rest/api/3/search');
+        var url = new URL(this.Credentials.instanceUrl + endpoint);
         url.search = new URLSearchParams(params).toString();
 
         const response = await fetch(url.toString(), {
@@ -45,40 +39,32 @@ export class JiraIssueRetriever {
         });
 
         if (!response.ok) {
-            throw new Error(`Failed to fetch issues: ${response.statusText}`);
+            throw new Error(`Failed to fetch ${url.toString()}: ${response.statusText}`);
         }
 
-        const rawIssueResponse = await response.json();
-
-        console.log(rawIssueResponse);
-
-        const rawIssues = rawIssueResponse.issues;
-        const issues = rawIssues.map((rawIssue: any) => {
-            return new JiraIssue({
-                key: rawIssue.key,
-                summary: rawIssue.fields.summary,
-                assignee: rawIssue.fields.assignee?.displayName || '',
-            });
-        });
-
-        return { issues: issues, total: rawIssueResponse.total };
+        return await response.json();
     }
 
-    async getRecentlyUpdatedIssues(): Promise<JiraIssue[]> {
+    async getSuggestions(query: string): Promise<JiraIssue[]> {
         if (!this.Credentials) {
             throw new Error('Not initialized');
         }
 
-        const query = 'updated >= -30d order by updated DESC';
+        const params = {
+            'query': query,
+        };
 
-        const initialResults = await this.searchIssues(query, 0);
-        const total = initialResults.total;
-        var issues = initialResults.issues;
+        const response = await this.get('/rest/api/3/issue/picker', params);
 
-        while (issues.length < total) {
-            const nextResults = await this.searchIssues(query, issues.length);
-            issues = issues.concat(nextResults.issues);
-        }
+        console.log(response);
+        const issues = response.sections[0].issues.map((rawIssue: any) => {
+            return new JiraIssue({
+                key: rawIssue.key,
+                summary: rawIssue.summary,
+                assignee: '',
+                iconUrl: this.Credentials?.instanceUrl + rawIssue.img,
+            });
+        });
 
         return issues;
     }

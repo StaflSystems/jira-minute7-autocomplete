@@ -13,6 +13,7 @@ const manifest: ManifestTypeV2 = {
     "128": "public/icon-128.png",
   },
   web_accessible_resources: ["public/*", "assets/*"],
+  permissions: ["storage", "https://*.atlassian.net/*"],
 };
 
 function getManifestV2(pageDirMap: { [x: string]: any }): ManifestTypeV2 {
@@ -31,6 +32,7 @@ function getManifestV2(pageDirMap: { [x: string]: any }): ManifestTypeV2 {
   if (pages.indexOf("background") > -1) {
     manifest.background = {
       scripts: [pageDirMap["background"]],
+      persistent: false,
     };
   }
 
@@ -44,7 +46,7 @@ function getManifestV2(pageDirMap: { [x: string]: any }): ManifestTypeV2 {
   if (pages.indexOf("content") > -1) {
     manifest.content_scripts = [
       {
-        matches: ["http://*/*", "https://*/*", "<all_urls>"],
+        matches: ["https://frontend.minute7.com/*"],
         js: [pageDirMap["content"]],
         css: pageDirMap["content-css"],
         run_at: "document_start",

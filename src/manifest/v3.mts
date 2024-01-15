@@ -18,7 +18,7 @@ const manifest: ManifestTypeV3 = {
       matches: ["<all_urls>"],
     },
   ],
-  permissions:[ "storage", "webRequest" ],
+  permissions:[ "storage" ],
   host_permissions: [
     "https://*.atlassian.net/*",
   ]
@@ -72,7 +72,7 @@ function getManifestV3(pageDirMap: { [x: string]: any }): ManifestTypeV3 {
   if (pages.indexOf("content") > -1) {
     manifest.content_scripts = [
       {
-        matches: ["http://*/*", "https://*/*", "<all_urls>"],
+        matches: ["https://frontend.minute7.com/*"],
         js: [pageDirMap["content"]],
         css: pageDirMap["content-css"],
         run_at: "document_start",

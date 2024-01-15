@@ -8,12 +8,13 @@ browser.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     if (message.type === "jiraSuggestions") {
         const jiraIssueRetriever = new JiraIssueRetriever();
         jiraIssueRetriever.init().then(async () => {
-            const issues = await jiraIssueRetriever.getRecentlyUpdatedIssues();
+            const issues = await jiraIssueRetriever.getSuggestions(message.text);
+            console.log(issues);
             sendResponse(issues);
         });
 
         return true;
-    }
+    } 
 });
 
 console.log("listener added");

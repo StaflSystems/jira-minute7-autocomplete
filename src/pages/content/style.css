@@ -1,3 +1,10 @@
+.autocomplete {
+    background-color: #FFFFFF;
+    z-index: 1;
+    border: rgba(38,46,58,.1) solid 1px;
+    border-radius: 5px;
+}
+
 .autocomplete-entry {
     background-color: #FFFFFF;
     padding: 5px;
@@ -9,4 +16,15 @@
 
   .autocomplete-entry:hover {
     background-color: #cbd1d3;
+  }
+
+  .autocomplete-entry>img {
+    display: inline;
+  }
+
+  .autocomplete-entry>div {
+    display: inline;
+    line-height: 22px;
+    vertical-align: top;
+    margin-left: 5px;
   }
