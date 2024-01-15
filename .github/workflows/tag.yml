@@ -1,0 +1,27 @@
+name: tag
+
+on:
+  workflow_call:
+    inputs:
+      version_full:
+        required: true
+        type: string
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Release Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-artifacts
+          pattern: extension-*
+          merge-multiple: true
+          
+      - name: Create a GitHub release
+        if: github.ref == 'refs/heads/main'
+        uses: StaflSystems/release-action@main
+        with:
+          artifacts: "release-artifacts/*"
+          tag: ${{ inputs.version_full }}
+          commit: ${{ github.sha }}

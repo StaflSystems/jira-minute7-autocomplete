@@ -7,7 +7,7 @@ import "./style.css";
 
 async function getDescriptionField(): Promise<HTMLTextAreaElement>
 {
-  var te: HTMLTextAreaElement | null = null;
+  let te: HTMLTextAreaElement | null = null;
   while (te == null) {
     te = document.getElementsByTagName("textarea")[0];
     await new Promise(r => setTimeout(r, 100));
@@ -41,7 +41,7 @@ async function init() {
     onSelect: (item: JiraIssue) => {
       textArea.value = `${item.key} - ${item.summary.replaceAll('<b>', '').replaceAll('</b>', '')}`;
     },
-    render: (item: JiraIssue, currentValue: string) => {
+    render: (item: JiraIssue) => {
       const div = document.createElement("div");
       div.classList.add("autocomplete-entry");
 

@@ -22,12 +22,12 @@ export class JiraIssueRetriever {
         }
     }
 
-    async get(endpoint: string, params: any): Promise<any> {
+    async get(endpoint: string, params: Record<string, string>): Promise<any> {
         if (!this.Credentials) {
             throw new Error('Not initialized');
         }
 
-        var url = new URL(this.Credentials.instanceUrl + endpoint);
+        const url = new URL(this.Credentials.instanceUrl + endpoint);
         url.search = new URLSearchParams(params).toString();
 
         const response = await fetch(url.toString(), {

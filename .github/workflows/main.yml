@@ -1,0 +1,39 @@
+name: main
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+concurrency:
+  group: ${{ github.repository }}-${{ github.workflow }}-${{ github.ref }}-${{ github.ref == 'refs/heads/main' && github.sha || ''}}
+  cancel-in-progress: true
+
+jobs:
+  determine-version:
+    uses: StaflSystems/CustomGitHubActions/.github/workflows/determine-version.yml@main
+    secrets: inherit
+
+  lint:
+    uses: ./.github/workflows/lint.yml
+    secrets: inherit
+    
+  build:
+    uses: ./.github/workflows/build.yml
+    secrets: inherit
+    needs: [ determine-version ]
+    with:
+      version_full: ${{ needs.determine-version.outputs.version_full }}
+      version_major: ${{ needs.determine-version.outputs.version_major }}
+      version_minor: ${{ needs.determine-version.outputs.version_minor }}
+      version_patch: ${{ needs.determine-version.outputs.version_patch }}
+      version_build: ${{ needs.determine-version.outputs.version_build }}
+      current_branch: ${{ needs.determine-version.outputs.current_branch }}
+
+  tag:
+    uses: ./.github/workflows/tag.yml
+    secrets: inherit
+    needs: [ determine-version, build, lint ]
+    with:
+      version_full: ${{ needs.determine-version.outputs.version_full }}

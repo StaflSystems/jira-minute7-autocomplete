@@ -1,0 +1,74 @@
+name: Build
+
+on:
+  workflow_call:
+    inputs:
+      version_full:
+        required: true
+        type: string
+      version_major:
+        required: true
+        type: string
+      version_minor:
+        required: true
+        type: string
+      version_patch:
+        required: true
+        type: string
+      version_build:
+        required: true
+        type: string
+      current_branch:
+        required: true
+        type: string
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            browser: chrome
+          - os: ubuntu-latest
+            browser: firefox
+          - os: ubuntu-latest
+            browser: edge
+          - os: macos-latest
+            browser: safari
+        
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '21'
+      
+      - name: Set Version
+        run: npm version --no-git-tag-version --allow-same-version ${{ inputs.version_full }}
+      
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build ${{ matrix.browser }}
+
+      - name: Generate Safari Project
+        if: matrix.browser == 'safari'
+        run: npm run build-safari
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: extension-${{ matrix.browser }}
+          path: dist/${{ matrix.browser }}
+      
+      - name: Upload Safari Project
+        if: matrix.browser == 'safari'
+        uses: actions/upload-artifact@v4
+        with:
+          name: extension-safari-project
+          path: xcode/
+      

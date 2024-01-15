@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { JiraCredentialStore, JiraCredentials } from "@src/lib/settings";
-
-import logo from "@assets/img/logo.svg";
 
 export default function Popup(): JSX.Element {
   const { register, handleSubmit, reset } = useForm<JiraCredentials>();
@@ -12,7 +10,7 @@ export default function Popup(): JSX.Element {
   async function loadCredentials(): Promise<void> {
     console.log("loading creds");
 
-    var credentials = await JiraCredentialStore.load();
+    let credentials = await JiraCredentialStore.load();
     if (!credentials) {
       credentials = new JiraCredentials({ instanceUrl: "", username: "", apiToken: "" });
     }
@@ -30,7 +28,7 @@ export default function Popup(): JSX.Element {
 
   function handleSave(data: JiraCredentials): void {
     JiraCredentialStore.save(data);
-  };
+  }
 
 
   return (

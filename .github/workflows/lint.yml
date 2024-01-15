@@ -1,0 +1,24 @@
+name: Lint
+
+on:
+  workflow_call:
+
+jobs:
+  lint:    
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '21'
+            
+      - name: Install dependencies
+        run: npm install
+
+      - name: Lint
+        run: npx eslint src
+
+      
